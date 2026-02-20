@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import backgroundImage from '../../2d-assets/background/background2.png'
+import backgroundImage from '../../2d-assets/background/background3.png'
 
 function App() {
   const bgStyle: React.CSSProperties = {
@@ -15,9 +15,10 @@ function App() {
 
   return (
     <>
-      <section style={bgStyle}>
-      
-      </section>
+      <div>
+        <img src={backgroundImage} className="background">
+        </img>
+      </div>
     </>
   )
 }
