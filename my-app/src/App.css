@@ -2,6 +2,10 @@
   max-width: 1280px;
   margin: 0 auto;
   text-align: center;
+  width: 100vw;
+  height: 100vh;
+  background: url('../../2d-assets/background/background3.png');
+  background-size: cover;
 }
 
 .logo {
@@ -43,16 +47,23 @@
   color: #888;
 }
 
-.background {
-  height: 100%;
-  width: 100%;
+.sprite {
+  position: absolute;
+  bottom: 0;
+  height: 20vh;
 }
 
-.gallery {
+.button {
+  background-color: gray;
+  border: none;
+  color: black;
+  padding: 1px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 50px;
+  cursor: pointer;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  z-index: 0;
+  top: 10px;
+  left: 10px;
 }
