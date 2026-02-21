@@ -54,12 +54,12 @@ export function draw(walkr1, walkr2, walkr3, walkl1, walkl2, walkl3) {
             direction = undefined;
         }
         if (direction != 'left' && direction != 'right') {
-            cur = (cur > 3 ? 4 : 1);
+            cur = (cur > 2 ? 4 : 1);
             framecount = 0;
         }
         else {
             framecount++;
-            if (framecount % 10 == 0) {
+            if (framecount % 10 == 1) {
                 cur = (cur + 1) % 3 + (direction === 'left') * 3;
             }
         }
