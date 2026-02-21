@@ -1,7 +1,7 @@
 import "./App.css";
 
-function addEntry() {
+function AddEntry() {
   return <div> hello world </div>;
 }
 
-export default addEntry;
+export default AddEntry;
