@@ -15,6 +15,31 @@ export class OmdbClient {
   }
 
   /**
+   * Fetch a URL and parse the JSON response, with descriptive errors for
+   * network failures and JSON parsing errors.
+   */
+  private async fetchJson<T>(url: string, context: string): Promise<T> {
+    let res: Response;
+    try {
+      res = await fetch(url);
+    } catch (err) {
+      throw new Error(`OMDB network error during ${context}: ${String(err)}`);
+    }
+
+    if (!res.ok) {
+      throw new Error(
+        `OMDB API error during ${context}: HTTP ${res.status}`,
+      );
+    }
+
+    try {
+      return (await res.json()) as T;
+    } catch (err) {
+      throw new Error(`OMDB invalid JSON during ${context}: ${String(err)}`);
+    }
+  }
+
+  /**
    * Search OMDB by title query string.
    */
   async searchMovies(
@@ -22,28 +47,12 @@ export class OmdbClient {
     page = 1,
   ): Promise<{ results: OmdbSearchResult[]; totalResults: number }> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&s=${encodeURIComponent(query)}&type=movie&page=${page}`;
-    let res: Response;
-    try {
-      res = await fetch(url);
-    } catch (err) {
-      throw new Error(
-        `OMDB network error during searchMovies: ${String(err)}`,
-      );
-    }
-
-    let data: {
+    const data = await this.fetchJson<{
       Search?: OmdbSearchResult[];
       totalResults?: string;
       Response: string;
       Error?: string;
-    };
-    try {
-      data = (await res.json()) as typeof data;
-    } catch (err) {
-      throw new Error(
-        `OMDB invalid JSON during searchMovies: ${String(err)}`,
-      );
-    }
+    }>(url, "searchMovies");
 
     if (data.Response === "False") {
       return { results: [], totalResults: 0 };
@@ -60,23 +69,7 @@ export class OmdbClient {
    */
   async getMovieById(imdbId: string): Promise<OmdbMovieDetail | null> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&i=${encodeURIComponent(imdbId)}&plot=full`;
-    let res: Response;
-    try {
-      res = await fetch(url);
-    } catch (err) {
-      throw new Error(
-        `OMDB network error during getMovieById: ${String(err)}`,
-      );
-    }
-
-    let data: OmdbMovieDetail;
-    try {
-      data = (await res.json()) as OmdbMovieDetail;
-    } catch (err) {
-      throw new Error(
-        `OMDB invalid JSON during getMovieById: ${String(err)}`,
-      );
-    }
+    const data = await this.fetchJson<OmdbMovieDetail>(url, "getMovieById");
 
     if (data.Response === "False") {
       return null;
@@ -96,23 +89,7 @@ export class OmdbClient {
     if (year) {
       url += `&y=${year}`;
     }
-    let res: Response;
-    try {
-      res = await fetch(url);
-    } catch (err) {
-      throw new Error(
-        `OMDB network error during getMovieByTitle: ${String(err)}`,
-      );
-    }
-
-    let data: OmdbMovieDetail;
-    try {
-      data = (await res.json()) as OmdbMovieDetail;
-    } catch (err) {
-      throw new Error(
-        `OMDB invalid JSON during getMovieByTitle: ${String(err)}`,
-      );
-    }
+    const data = await this.fetchJson<OmdbMovieDetail>(url, "getMovieByTitle");
 
     if (data.Response === "False") {
       return null;
