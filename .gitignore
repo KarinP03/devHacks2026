@@ -1,20 +1,5 @@
-# Dependencies
-node_modules/
-
-# Build output & data
-dist/
-dist-ssr/
-*.tsbuildinfo
-data/
-
-# Environment (keep .env.example)
-.env
-.env.local
-.env.*.local
-!.env.example
-
 # Logs
-logs/
+logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -22,24 +7,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Test & coverage
-coverage/
-*.lcov
-
-# OS files
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
+node_modules
+dist
+dist-ssr
+*.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-!.vscode/settings.json
-.idea/
+.idea
+.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-*.local
