@@ -54,6 +54,15 @@ describe("manualAddSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("defaults director to 'Unknown' when omitted", () => {
+    const { director: _, ...withoutDirector } = validManual;
+    const result = manualAddSchema.safeParse(withoutDirector);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.director).toBe("Unknown");
+    }
+  });
+
   it("rejects empty director name", () => {
     const result = manualAddSchema.safeParse({ ...validManual, director: "" });
     expect(result.success).toBe(false);
