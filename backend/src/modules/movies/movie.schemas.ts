@@ -67,7 +67,7 @@ export const addMovieSchema = z
 const movieDataSchema = z.object({
   title: fields.title,
   year: fields.year,
-  director: fields.director.optional(),
+  director: fields.director.optional().default("Unknown"),
   genre: fields.genre,
   plot: fields.plot.optional(),
   runtime: fields.runtime.optional(),

@@ -200,7 +200,7 @@ movieRoutes.openapi(manualAddRoute, async (c) => {
   const parsed = c.req.valid("json");
   const movie = await service.add({
     ...parsed,
-    director: parsed.director ?? "Unknown",
+    director: parsed.director,
     tags: parsed.tags ?? [],
   });
   return c.json(successResponse(movie), 201);
