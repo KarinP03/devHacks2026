@@ -1,5 +1,5 @@
 import { env } from "../../config/env.js";
-import type { OmdbSearchResult, OmdbMovieDetail } from "./movie.schemas.js";
+import type { OmdbSearchResult, OmdbMovieDetail, OmdbSearchApiResponse } from "./movie.schemas.js";
 
 const OMDB_BASE_URL = "https://www.omdbapi.com";
 
@@ -15,6 +15,31 @@ export class OmdbClient {
   }
 
   /**
+   * Fetch a URL and parse the JSON response, with descriptive errors for
+   * network failures and JSON parsing errors.
+   */
+  private async fetchJson<T>(url: string, context: string): Promise<T> {
+    let res: Response;
+    try {
+      res = await fetch(url);
+    } catch (err) {
+      throw new Error(`OMDB network error during ${context}: ${String(err)}`);
+    }
+
+    if (!res.ok) {
+      throw new Error(
+        `OMDB API error during ${context}: HTTP ${res.status}`,
+      );
+    }
+
+    try {
+      return (await res.json()) as T;
+    } catch (err) {
+      throw new Error(`OMDB invalid JSON during ${context}: ${String(err)}`);
+    }
+  }
+
+  /**
    * Search OMDB by title query string.
    */
   async searchMovies(
@@ -22,13 +47,7 @@ export class OmdbClient {
     page = 1,
   ): Promise<{ results: OmdbSearchResult[]; totalResults: number }> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&s=${encodeURIComponent(query)}&type=movie&page=${page}`;
-    const res = await fetch(url);
-    const data = (await res.json()) as {
-      Search?: OmdbSearchResult[];
-      totalResults?: string;
-      Response: string;
-      Error?: string;
-    };
+    const data = await this.fetchJson<OmdbSearchApiResponse>(url, "searchMovies");
 
     if (data.Response === "False") {
       return { results: [], totalResults: 0 };
@@ -45,8 +64,7 @@ export class OmdbClient {
    */
   async getMovieById(imdbId: string): Promise<OmdbMovieDetail | null> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&i=${encodeURIComponent(imdbId)}&plot=full`;
-    const res = await fetch(url);
-    const data = (await res.json()) as OmdbMovieDetail;
+    const data = await this.fetchJson<OmdbMovieDetail>(url, "getMovieById");
 
     if (data.Response === "False") {
       return null;
@@ -66,8 +84,7 @@ export class OmdbClient {
     if (year) {
       url += `&y=${year}`;
     }
-    const res = await fetch(url);
-    const data = (await res.json()) as OmdbMovieDetail;
+    const data = await this.fetchJson<OmdbMovieDetail>(url, "getMovieByTitle");
 
     if (data.Response === "False") {
       return null;

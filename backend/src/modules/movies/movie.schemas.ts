@@ -183,6 +183,13 @@ export const omdbMovieDetailSchema = z
   })
   .openapi("OmdbMovieDetail");
 
+export const omdbSearchApiResponseSchema = z.object({
+  Search: z.array(omdbSearchResultSchema).optional(),
+  totalResults: fields.stringOptional,
+  Response: fields.string,
+  Error: fields.stringOptional,
+});
+
 export const errorResponseSchema = z
   .object({
     success: z.literal(false),
@@ -214,3 +221,4 @@ export type Movie = z.infer<typeof movieSchema>;
 export type MovieEra = z.infer<typeof fields.era>;
 export type OmdbSearchResult = z.infer<typeof omdbSearchResultSchema>;
 export type OmdbMovieDetail = z.infer<typeof omdbMovieDetailSchema>;
+export type OmdbSearchApiResponse = z.infer<typeof omdbSearchApiResponseSchema>;
