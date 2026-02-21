@@ -12,7 +12,10 @@ export const globalErrorHandler: ErrorHandler = (err, c) => {
     "status" in err && typeof err.status === "number" && err.status >= 200
       ? (err.status as ContentfulStatusCode)
       : 500;
-  const message = err.message || "Internal Server Error";
+  const isProduction = process.env.NODE_ENV === "production";
+  const isServerError = status >= 500;
+  const message =
+    isProduction && isServerError ? "Internal Server Error" : err.message || "Internal Server Error";
 
   return c.json(errorResponse(message), status);
 };
