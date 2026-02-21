@@ -46,7 +46,13 @@
 .sprite {
   position: absolute;
   bottom: 0;
-  height: 20vh;
+  height: 100vh;
+}
+
+.sprite-container {
+  position: absolute;
+  bottom: 0px;
+  left: 45vw;
 }
 
 .background {
