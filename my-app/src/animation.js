@@ -43,7 +43,6 @@ export function draw(walkr1, walkr2, walkr3, walkl1, walkl2, walkl3) {
     function animate() {
         const right = (key['ArrowRight'] === true || key['d'] === true);
         const left = (key['ArrowLeft'] === true || key['a'] === true);
-        console.log(key["ArrowRight"])
         if (right && direction != 'left') {
             direction = 'right';
         }
