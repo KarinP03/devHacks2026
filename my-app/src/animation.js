@@ -1,7 +1,7 @@
-export function draw(walk1, walk2, walk3) {
+export function draw(walkr1, walkr2, walkr3, walkl1, walkl2, walkl3) {
     const canvas = document.getElementById("sprite");
     const ctx = canvas.getContext("2d");
-    const images = [walk1, walk2, walk3];
+    const images = [walkr1, walkr2, walkr3, walkl1, walkl2, walkl3];
     function loadImages() {
         let loaded = 0;
         images.forEach((src, index) => {
@@ -54,13 +54,13 @@ export function draw(walk1, walk2, walk3) {
             direction = undefined;
         }
         if (direction != 'left' && direction != 'right') {
-            cur = 1;
+            cur = (cur > 3 ? 4 : 1);
             framecount = 0;
         }
         else {
             framecount++;
             if (framecount % 10 == 0) {
-                cur = (cur + 1) % 3;
+                cur = (cur + 1) % 3 + (direction === 'left') * 3;
             }
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
