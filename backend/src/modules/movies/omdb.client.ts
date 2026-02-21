@@ -22,13 +22,28 @@ export class OmdbClient {
     page = 1,
   ): Promise<{ results: OmdbSearchResult[]; totalResults: number }> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&s=${encodeURIComponent(query)}&type=movie&page=${page}`;
-    const res = await fetch(url);
-    const data = (await res.json()) as {
+    let res: Response;
+    try {
+      res = await fetch(url);
+    } catch (err) {
+      throw new Error(
+        `OMDB network error during searchMovies: ${String(err)}`,
+      );
+    }
+
+    let data: {
       Search?: OmdbSearchResult[];
       totalResults?: string;
       Response: string;
       Error?: string;
     };
+    try {
+      data = (await res.json()) as typeof data;
+    } catch (err) {
+      throw new Error(
+        `OMDB invalid JSON during searchMovies: ${String(err)}`,
+      );
+    }
 
     if (data.Response === "False") {
       return { results: [], totalResults: 0 };
@@ -45,8 +60,23 @@ export class OmdbClient {
    */
   async getMovieById(imdbId: string): Promise<OmdbMovieDetail | null> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&i=${encodeURIComponent(imdbId)}&plot=full`;
-    const res = await fetch(url);
-    const data = (await res.json()) as OmdbMovieDetail;
+    let res: Response;
+    try {
+      res = await fetch(url);
+    } catch (err) {
+      throw new Error(
+        `OMDB network error during getMovieById: ${String(err)}`,
+      );
+    }
+
+    let data: OmdbMovieDetail;
+    try {
+      data = (await res.json()) as OmdbMovieDetail;
+    } catch (err) {
+      throw new Error(
+        `OMDB invalid JSON during getMovieById: ${String(err)}`,
+      );
+    }
 
     if (data.Response === "False") {
       return null;
@@ -66,8 +96,23 @@ export class OmdbClient {
     if (year) {
       url += `&y=${year}`;
     }
-    const res = await fetch(url);
-    const data = (await res.json()) as OmdbMovieDetail;
+    let res: Response;
+    try {
+      res = await fetch(url);
+    } catch (err) {
+      throw new Error(
+        `OMDB network error during getMovieByTitle: ${String(err)}`,
+      );
+    }
+
+    let data: OmdbMovieDetail;
+    try {
+      data = (await res.json()) as OmdbMovieDetail;
+    } catch (err) {
+      throw new Error(
+        `OMDB invalid JSON during getMovieByTitle: ${String(err)}`,
+      );
+    }
 
     if (data.Response === "False") {
       return null;
