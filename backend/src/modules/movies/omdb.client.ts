@@ -1,5 +1,5 @@
 import { env } from "../../config/env.js";
-import type { OmdbSearchResult, OmdbMovieDetail } from "./movie.schemas.js";
+import type { OmdbSearchResult, OmdbMovieDetail, OmdbSearchApiResponse } from "./movie.schemas.js";
 
 const OMDB_BASE_URL = "https://www.omdbapi.com";
 
@@ -47,12 +47,7 @@ export class OmdbClient {
     page = 1,
   ): Promise<{ results: OmdbSearchResult[]; totalResults: number }> {
     const url = `${OMDB_BASE_URL}/?apikey=${this.apiKey}&s=${encodeURIComponent(query)}&type=movie&page=${page}`;
-    const data = await this.fetchJson<{
-      Search?: OmdbSearchResult[];
-      totalResults?: string;
-      Response: string;
-      Error?: string;
-    }>(url, "searchMovies");
+    const data = await this.fetchJson<OmdbSearchApiResponse>(url, "searchMovies");
 
     if (data.Response === "False") {
       return { results: [], totalResults: 0 };
